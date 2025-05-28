@@ -1,12 +1,14 @@
 import { ProfileUI } from '@ui-pages';
 import { FC, SyntheticEvent, useEffect, useState } from 'react';
+import { AppDispatch, useDispatch, useSelector } from '../../services/store';
+import userEvent from '@testing-library/user-event';
+import { getUser, updateUser } from '../../services/slices/userSlice';
+import { TRegisterData } from '@api';
+import { TUser } from '@utils-types';
 
 export const Profile: FC = () => {
-  /** TODO: взять переменную из стора */
-  const user = {
-    name: '',
-    email: ''
-  };
+  const dispatch: AppDispatch = useDispatch();
+  const user = useSelector(state => state.user.user || { name: '', email: '' });
 
   const [formValue, setFormValue] = useState({
     name: user.name,
@@ -29,6 +31,23 @@ export const Profile: FC = () => {
 
   const handleSubmit = (e: SyntheticEvent) => {
     e.preventDefault();
+
+    const values: Partial<TRegisterData> = {
+      ...(formValue.name != user.name 
+        ? { name: formValue.name  }
+        : {}),
+      ...(formValue.email != user.email 
+        ? { email: formValue.email  }
+        : {}),
+      ...(formValue.password.length > 0
+        ? { password: formValue.password  }
+        : {})
+      };
+    dispatch(updateUser(values));
+    setFormValue((prevState) => ({
+      ...prevState,
+      password: ''
+    }));
   };
 
   const handleCancel = (e: SyntheticEvent) => {
@@ -56,6 +75,4 @@ export const Profile: FC = () => {
       handleInputChange={handleInputChange}
     />
   );
-
-  return null;
 };

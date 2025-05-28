@@ -9,6 +9,8 @@ import { BurgerConstructorUIProps } from './type';
 import { TConstructorIngredient } from '@utils-types';
 import { BurgerConstructorElement, Modal } from '@components';
 import { Preloader, OrderDetailsUI } from '@ui';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 
 export const BurgerConstructorUI: FC<BurgerConstructorUIProps> = ({
   constructorItems,
@@ -38,16 +40,18 @@ export const BurgerConstructorUI: FC<BurgerConstructorUIProps> = ({
     )}
     <ul className={styles.elements}>
       {constructorItems.ingredients.length > 0 ? (
-        constructorItems.ingredients.map(
-          (item: TConstructorIngredient, index: number) => (
-            <BurgerConstructorElement
-              ingredient={item}
-              index={index}
-              totalItems={constructorItems.ingredients.length}
-              key={item.id}
-            />
-          )
-        )
+        <DndProvider backend={HTML5Backend}>{
+            constructorItems.ingredients.map(
+              (item: TConstructorIngredient, index: number) => (
+                <BurgerConstructorElement
+                  ingredient={item}
+                  index={index}
+                  totalItems={constructorItems.ingredients.length}
+                  key={item.id}
+                />
+              )
+            )
+        }</DndProvider>
       ) : (
         <div
           className={`${styles.noBuns} ml-8 mb-4 mr-5 text text_type_main-default`}
