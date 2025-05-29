@@ -4,6 +4,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const Dotenv = require('dotenv-webpack');
 
 module.exports = (_, argv) => {
+  const isDevelopment = argv.mode === 'development';
   return {
     entry: path.resolve(__dirname, './src/index.tsx'),
     module: {
@@ -33,7 +34,9 @@ module.exports = (_, argv) => {
             {
               loader: 'css-loader',
               options: {
-                modules: true
+                modules: {
+                  localIdentName: isDevelopment ? '[path][name]__[local]' : '[hash:base64]'
+                }
               }
             }
           ]
